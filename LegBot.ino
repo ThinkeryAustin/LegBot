@@ -39,7 +39,10 @@ void loop() {
 
 	if (fwdDistance < dangerThreshold) {
 		// stop the motor, there's an obstacle in our way
-		motor.write(90);
+		if (currentMotorSpeed != 90) {
+			currentMotorSpeed = 90;
+			motor.write(90);
+		}
 	}
 	else if (digitalRead(switchPin) == switchPolarity) {
 		// if the switch has not flipped yet, keep going forward
