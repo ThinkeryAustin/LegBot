@@ -7,7 +7,8 @@
 
 // Pin Mapping
 const int motorPin = 10;
-const int pingPin = 7;
+const int pingEchoPin = 7;
+const int pingTrigPin = 8;
 const int switchPin = 2;
 
 // There's a good chance this will have to be changed to "LOW"
@@ -30,6 +31,10 @@ void setup() {
 	
 	// Init switch input and enable pullup resistor
 	pinMode(switchPin, INPUT_PULLUP);
+	
+	// Init pins for rangefinder sensor
+	pinMode(pingTrigPin, OUTPUT);
+	pinMode(pingEchoPin, INPUT);
 	
 	delay(5000);
 }
@@ -65,16 +70,14 @@ long ping()
 	int duration;
 	
 	// Send out PING))) signal pulse
-	pinMode(pingPin, OUTPUT);
-	digitalWrite(pingPin, LOW);
+	digitalWrite(pingTrigPin, LOW);
 	delayMicroseconds(2);
-	digitalWrite(pingPin, HIGH);
-	delayMicroseconds(5);
-	digitalWrite(pingPin, LOW);
+	digitalWrite(pingTrigPin, HIGH);
+	delayMicroseconds(10);
+	digitalWrite(pingTrigPin, LOW);
 
 	//Get duration it takes to receive echo
-	pinMode(pingPin, INPUT);
-	duration = pulseIn(pingPin, HIGH);
+	duration = pulseIn(pingEchoPin, HIGH);
 
 	//Convert duration into distance
 	return duration / 29 / 2;
