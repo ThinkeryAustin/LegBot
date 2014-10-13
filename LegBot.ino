@@ -36,7 +36,7 @@ void setup() {
 
 void loop() {
 	int fwdDistance = ping();
-	int currentPos = 0;
+	static int currentPos = 0;
 
 	if (fwdDistance > dangerThreshold) {
 		// keep going, there's no obstruction
