@@ -9,28 +9,23 @@
 const int motorPin = 10;
 const int pingEchoPin = 7;
 const int pingTrigPin = 8;
-const int switchPin = 2;
 
-// There's a good chance this will have to be changed to "LOW"
-// based on how the switch is wired to the Arduino.
-const int switchPolarity = HIGH;
+// Set the angles of the two positions that the bot uses to move
+const int motorOpenPosition = 90;
+const int motorClosedPosition = 60;
 
-// Set the speed that the servo will move.
-// Range is 0-90 with higher numbers meaning the servo will move faster.
-const int motorSpeed = 15;
+// time to wait between "steps" of the bot, in milliseconds
+// this increases or decreases the overall speed of the bot
+const int motorStepDelay = 2000;
 
 // Threshold for obstacles (in cm)
 const int dangerThreshold = 10;
 
 Servo motor;
-int currentMotorSpeed;
 
 void setup() {
 	// Init main servo
 	motor.attach(motorPin);
-	
-	// Init switch input and enable pullup resistor
-	pinMode(switchPin, INPUT_PULLUP);
 	
 	// Init pins for rangefinder sensor
 	pinMode(pingTrigPin, OUTPUT);
@@ -41,28 +36,22 @@ void setup() {
 
 void loop() {
 	int fwdDistance = ping();
+	int currentPos = 0;
 
-	if (fwdDistance < dangerThreshold) {
-		// stop the motor, there's an obstacle in our way
-		if (currentMotorSpeed != 90) {
-			currentMotorSpeed = 90;
-			motor.write(90);
+	if (fwdDistance > dangerThreshold) {
+		// keep going, there's no obstruction
+		if (!currentPos) {
+			motor.write(motorOpenPosition);
+			currentPos = 1;
+		}
+		else {
+			motor.write(motorClosedPosition);
+			currentPos = 0;
 		}
 	}
-	else if (digitalRead(switchPin) == switchPolarity) {
-		// if the switch has not flipped yet, keep going forward
-		if (currentMotorSpeed != 90 + motorSpeed) {
-			currentMotorSpeed = 90 + motorSpeed;
-			motor.write(currentMotorSpeed);
-		}
-	}
-	else {
-		// after the switch flips move backward
-		if (currentMotorSpeed != 90 - motorSpeed) {
-			currentMotorSpeed = 90 - motorSpeed;
-			motor.write(currentMotorSpeed);
-		}
-	}
+	
+	// wait until the next step
+	delay(motorStepDelay);
 }
 
 long ping()
