@@ -10,13 +10,13 @@ const int motorPin = 10;
 const int pingEchoPin = 7;
 const int pingTrigPin = 8;
 
-// Set the angles of the two positions that the bot uses to move
-const int motorOpenPosition = 90;
-const int motorClosedPosition = 60;
+// Set the angles of the two servo positions that the bot uses to move
+const int motorOpenPosition = 100;
+const int motorClosedPosition = 70; // 70 is MINIMUM, otherwise feet hit
 
 // time to wait between "steps" of the bot, in milliseconds
 // this increases or decreases the overall speed of the bot
-const int motorStepDelay = 2000;
+const int motorStepDelay = 300;
 
 // Threshold for obstacles (in cm)
 const int dangerThreshold = 10;
